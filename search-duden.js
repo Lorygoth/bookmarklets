@@ -23,7 +23,7 @@ javascript:(function(){
     script.onload = scriptLoadedLogic;
     script.type="text/javascript";
     script.src = originalScriptUrl
-        .replace(/raw\.githubusercontent\.com\/(.*)\/\w+\/(\w+\.js)/, 'cdn.jsdelivr.net/gh/$1/$2');
+        .replace(/raw\.githubusercontent\.com\/(.*)\/[^\/]+\/([^\/]+\.js)$/, 'cdn.jsdelivr.net/gh/$1/$2');
     document.body.appendChild(script);
 })();
 */
