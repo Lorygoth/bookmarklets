@@ -242,7 +242,7 @@ window.lorygoth = {
                 let matches = availableFromText.match(value.expression);
                 if (matches === null) continue;
 
-                result = callback.output(matches.slice(1));
+                result = value.callback.output(matches.slice(1));
             }
 
             if (!result) {
