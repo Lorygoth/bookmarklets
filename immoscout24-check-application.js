@@ -87,7 +87,7 @@ window.lorygoth = {
 		
         /* add this page as already viewed to collapse it in the search result list */
         const lsDataKey = 'resultlist';
-        const data = JSON.parse(localStorage[lsDataKey] || { hiddenEntries: [] })
+        const data = JSON.parse(localStorage[lsDataKey] || JSON.stringify({ hiddenEntries: [] }))
         const applicationId = Number(window.location.href.match(/\/(\d+)\?/)[1]);
         if (!data.hiddenEntries.includes(applicationId)) data.hiddenEntries.push(applicationId);
         localStorage[lsDataKey] = JSON.stringify(data);
