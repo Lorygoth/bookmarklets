@@ -222,6 +222,18 @@ window.lorygoth = {
                     callback: matches => new Date(Number(matches[2]) + 2000, Number(matches[1]), Number(matches[0]))
                 },
                 {
+                    expression: /(\d{1}).(\d{1}).(\d{2})/,
+                    callback: matches => new Date(Number(matches[2]) + 2000, Number(matches[1]), Number(matches[0]))
+                },
+                {
+                    expression: /(\d{1}).(\d{2}).(\d{2})/,
+                    callback: matches => new Date(Number(matches[2]) + 2000, Number(matches[1]), Number(matches[0]))
+                },
+                {
+                    expression: /(\d{2}).(\d{1}).(\d{2})/,
+                    callback: matches => new Date(Number(matches[2]) + 2000, Number(matches[1]), Number(matches[0]))
+                },
+                {
                     expression: /(\w+)\s+(\d{4})/gi,
                     callback: matches => {
                         if (!(matches[0] in monthsDict)) return null;
