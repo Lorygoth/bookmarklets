@@ -4,20 +4,21 @@ window.lorygoth = {
         let verb = prompt('Enter word to search by duden:');
         if (!verb) return;
         const firstIsCapital = verb.charAt(0) === verb.charAt(0).toUpperCase();
-
+        verb = verb.toLowerCase();
         const dict = {
             ü: 'ue',
             ö: 'oe',
             ä: 'ae',
             ß: 'sz'
         };
-        for (key in Object.keys(dict)) {
+        for (key of Object.keys(dict)) {
             verb = verb.replace(key, dict[key]);
         }
 
         if (firstIsCapital) {
             verb = verb.charAt(0).toUpperCase() + verb.slice(1);
         }
+
         window.location.href = `https://www.duden.de/rechtschreibung/${verb}`;
     }
 };
