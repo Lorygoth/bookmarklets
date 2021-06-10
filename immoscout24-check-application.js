@@ -8,83 +8,82 @@ window.lorygoth = {
                 .map(x =>
                     /[A-Z]/.test(x) && [x, "𝗔", "A"] ||
                     /[a-z]/.test(x) && [x, "𝗮", "a"] ||
-                    /\d/.test(x) && [x, "𝟬", "0"] ||
-                    [x, x, x])
+                    /\d/.test(x) && [x, "𝟬", "0"] || [x, x, x])
                 .map(x => x.map(s => s.codePointAt(0)))
                 .map(x => String.fromCodePoint(x[0] + x[1] - x[2]))
                 .join(''),
             underline: s => !s ? s : [...s].join('\u0332') + '\u0332',
             zeroPad: (value, places) => String(value).padStart(places, '0')
-        /* underline('hello world') => "h̲e̲l̲l̲o̲ ̲w̲o̲r̲l̲d̲" */
+                /* underline('hello world') => "h̲e̲l̲l̲o̲ ̲w̲o̲r̲l̲d̲" */
         };
         const abortDict = {};
         const helpFuncs = {
-        doOnCondition: (conditionCheckAction, action, checkEveryMs = 100, abortAction = null, abortAfterMs = 1000) => {
-            log(`dooncondition for: ${conditionCheckAction}`);
-            if (!(conditionCheckAction in abortDict)) {
-                abortDict[conditionCheckAction] = new Date().getTime();
-            } else {
-            if (new Date().getTime() - abortDict[conditionCheckAction] >= abortAfterMs) {
-                log(`dooncondition abort for: ${conditionCheckAction}`);
-                if (abortAction)
-                abortAction();
-                return;
-            }
-            }
+            doOnCondition: (conditionCheckAction, action, checkEveryMs = 100, abortAction = null, abortAfterMs = 1000) => {
+                log(`dooncondition for: ${conditionCheckAction}`);
+                if (!(conditionCheckAction in abortDict)) {
+                    abortDict[conditionCheckAction] = new Date().getTime();
+                } else {
+                    if (new Date().getTime() - abortDict[conditionCheckAction] >= abortAfterMs) {
+                        log(`dooncondition abort for: ${conditionCheckAction}`);
+                        if (abortAction)
+                            abortAction();
+                        return;
+                    }
+                }
 
-            log(`${JSON.stringify(resultInfo, null, 2)}`);
-            if (conditionCheckAction() == false) {
-            log(`dooncondition reschedule action for: ${conditionCheckAction}`);
-            window.setTimeout(
-                () => helpFuncs.doOnCondition(conditionCheckAction, action, checkEveryMs, abortAction, abortAfterMs),
-                checkEveryMs);
-            } else {
-            log(`dooncondition action for: ${conditionCheckAction}`);
-            action();
-            }
-        },
-        formatDate: dt => `${dt.getYear() + 1900}.${textFormat.zeroPad(dt[1], 2)}.${textFormat.zeroPad(dt[2], 2)}`,
+                log(`${JSON.stringify(resultInfo, null, 2)}`);
+                if (conditionCheckAction() == false) {
+                    log(`dooncondition reschedule action for: ${conditionCheckAction}`);
+                    window.setTimeout(
+                        () => helpFuncs.doOnCondition(conditionCheckAction, action, checkEveryMs, abortAction, abortAfterMs),
+                        checkEveryMs);
+                } else {
+                    log(`dooncondition action for: ${conditionCheckAction}`);
+                    action();
+                }
+            },
+            formatDate: dt => `${dt.getYear() + 1900}.${textFormat.zeroPad(dt[1], 2)}.${textFormat.zeroPad(dt[2], 2)}`,
         };
 
         const resultInfo = {
-        skip: false,
-        route: false,
-        availability: false,
+            skip: false,
+            route: false,
+            availability: false,
             address: false,
             noChance: false,
         };
         helpFuncs.doOnCondition(
             () => resultInfo.route && resultInfo.availability && resultInfo.address || resultInfo.skip,
             () => {
-                    if (resultInfo.skip) {
-                        alert(`Не подходит: ${textFormat.underline(resultInfo.skip)}`);
-                        return;
-                    }
+                if (resultInfo.skip) {
+                    alert(`Не подходит: ${textFormat.underline(resultInfo.skip)}`);
+                    return;
+                }
 
-                    const hours = Math.floor(resultInfo.route / 60);
-                    const minutes = resultInfo.route % 60;
-                    const timeArr = [];
-                    if (hours) {
-                        timeArr.push(`${hours}ч`);
-                    }
-                    if (minutes) {
-                        timeArr.push(`${minutes}мин`);
-                    }
-                    const output = [
-                        `Самый долгий маршрут: ${timeArr.join(' ')}`,
-                        `${resultInfo.availability}`,
-                        `Адрес: ${resultInfo.address}`
-                    ];
+                const hours = Math.floor(resultInfo.route / 60);
+                const minutes = resultInfo.route % 60;
+                const timeArr = [];
+                if (hours) {
+                    timeArr.push(`${hours}ч`);
+                }
+                if (minutes) {
+                    timeArr.push(`${minutes}мин`);
+                }
+                const output = [
+                    `Самый долгий маршрут: ${timeArr.join(' ')}`,
+                    `${resultInfo.availability}`,
+                    `Адрес: ${resultInfo.address}`
+                ];
 
-                    if (resultInfo.noChance) output.push(textFormat.underline('Уже много кто посмотрел'));
-                    alert(output.join('\r'));
-                },
+                if (resultInfo.noChance) output.push(textFormat.underline('Уже много кто посмотрел'));
+                alert(output.join('\r'));
+            },
             100,
             () => {
                 alert(`timeout ${JSON.stringify(resultInfo, null, 2)}`);
             },
-        5000);
-		
+            5000);
+
         /* add this page as already viewed to collapse it in the search result list */
         const lsDataKey = 'resultlist';
         const data = JSON.parse(localStorage[lsDataKey] || JSON.stringify({ hiddenEntries: [] }))
@@ -120,8 +119,7 @@ window.lorygoth = {
         const notDefinedAddressClass = 'zip-region-and-country';
         if (!addressBlock || addressBlock.className == notDefinedAddressClass) {
             resultInfo.address = textFormat.underline('Указан не полностью');
-        }
-        else {
+        } else {
             resultInfo.address = addressBlock.textContent.trim().replace(/^,/g, '').replace(/,$/g, '');
         }
         /**********/
@@ -146,15 +144,15 @@ window.lorygoth = {
                     .map(arr => {
                         let hours = 0;
                         if (arr[0]) {
-                           hours = Number(arr[0].substr(0, arr[0].length - 1).trim());
+                            hours = Number(arr[0].substr(0, arr[0].length - 1).trim());
                         }
                         let minutes = Number(arr[1]) + 60 * hours;
                         return minutes;
                     })
                     .reduce((p, n) => n > p ? n : p);
-                if (maxDuration > 70) resultInfo.skip = 'Слишком долгий маршрут.'; 
-                    resultInfo.route = maxDuration;
-        });
+                if (maxDuration > 70) resultInfo.skip = 'Слишком долгий маршрут.';
+                resultInfo.route = maxDuration;
+            });
         /********/
         /*~ROUTE*/
         /********/
@@ -168,7 +166,7 @@ window.lorygoth = {
             .find(x => {
                 const dt = x.find(node => node.tagName == 'DT');
                 return dt && dt.textContent == availableFrom_Name;
-        });
+            });
         (() => {
             if (!availableFromParentEl || !availableFromParentEl
                 .find(x => x.tagName == 'DD')) {
@@ -208,8 +206,7 @@ window.lorygoth = {
                 December: 12,
                 Dezember: 12
             };
-            const regexToTest = [
-                {
+            const regexToTest = [{
                     expression: /(\d{2}).(\d{2}).(\d{4})/,
                     callback: matches => new Date(Number(matches[2]), Number(matches[1]), Number(matches[0]))
                 },
@@ -246,11 +243,15 @@ window.lorygoth = {
                         if (!(matches[0] in monthsDict)) return null;
                         return new Date(Number(matches[1]) + 2000, monthsDict[matches[0]], 1);
                     }
-                }
+                },
+                {
+                    expression: /(\d{2}).(\d{2})/,
+                    callback: matches => new Date(Number(new Date().getYear() + 1900, Number(matches[1]), Number(matches[0])))
+                },
             ];
 
             let result = null;
-            for (const value of regexToTest){
+            for (const value of regexToTest) {
                 let matches = availableFromText.match(value.expression);
                 if (matches === null) continue;
 
@@ -281,7 +282,7 @@ window.lorygoth = {
 javascript:(function(){
     const originalScriptUrl = 'https://raw.githubusercontent.com/Lorygoth/bookmarklets/main/immoscout24-check-application.js';
     const scriptLoadedLogic = () => { window.lorygoth.checkImmoscoutApplication(); };
-    if (window.lorygoth && window.lorygoth.checkImmoscoutApplication) {
+    if (window.lorygoth?.checkImmoscoutApplication) {
         scriptLoadedLogic();
         return;
     }
