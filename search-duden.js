@@ -19,7 +19,7 @@ window.lorygoth = {
             verb = verb.charAt(0).toUpperCase() + verb.slice(1);
         }
 
-        window.location.href = `https://www.duden.de/rechtschreibung/${verb}`;
+        window.location.href = `https://www.duden.de/suchen/dudenonline/${verb}`;
     }
 };
 
