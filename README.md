@@ -20,6 +20,6 @@ javascript:(function(){
 })();
 ```
 
-<a href="javascript:void((function() {alert('Hello World');}})());">Hello</a>
+[Hello](javascript:void((function() {alert('Hello World');})()))
 
 Thanks for a solution: https://stackoverflow.com/a/18049842
